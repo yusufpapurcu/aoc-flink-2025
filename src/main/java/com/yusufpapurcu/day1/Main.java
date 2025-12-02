@@ -1,17 +1,14 @@
-package com.teya;
+package com.yusufpapurcu.day1;
 
-import org.apache.flink.api.common.accumulators.IntCounter;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.file.src.FileSource;
 import org.apache.flink.connector.file.src.reader.TextLineInputFormat;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.aggregation.SumAggregator;
 import org.apache.flink.streaming.api.windowing.assigners.GlobalWindows;
-import org.apache.flink.streaming.api.windowing.assigners.WindowAssigner;
 
-public class Day1Step1 {
+public class Main {
 
     public static void main(String[] args) throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -28,8 +25,21 @@ public class Day1Step1 {
             "file-source"
         );
 
+        DataStream<String> stream2 = env.fromSource(
+                source,
+                WatermarkStrategy.noWatermarks(),
+                "file-source"
+        );
+
         stream
-                .flatMap(new Day1Step1Solution())
+                .flatMap(new DialFlatmap())
+                .windowAll(GlobalWindows.createWithEndOfStreamTrigger())
+                .sum(0)
+                .print();
+
+        stream2
+                .flatMap(new PopulateRotationFlatmap())
+                .flatMap(new RotateFlatmap())
                 .windowAll(GlobalWindows.createWithEndOfStreamTrigger())
                 .sum(0)
                 .print();

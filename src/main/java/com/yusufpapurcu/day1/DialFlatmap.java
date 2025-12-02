@@ -1,9 +1,9 @@
-package com.teya;
+package com.yusufpapurcu.day1;
 
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.util.Collector;
 
-public class Day1Step1Solution extends RichFlatMapFunction<String, Integer> {
+public class DialFlatmap extends RichFlatMapFunction<String, Integer> {
     private int currentDialIndex = 50;
 
     @Override
