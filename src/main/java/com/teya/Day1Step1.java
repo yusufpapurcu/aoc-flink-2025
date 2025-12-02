@@ -29,10 +29,9 @@ public class Day1Step1 {
         );
 
         stream
-                .keyBy(s -> "")
-                .process(new Day1Step1Solution())
+                .flatMap(new Day1Step1Solution())
                 .windowAll(GlobalWindows.createWithEndOfStreamTrigger())
-                .aggregate(new AverageAggregate())
+                .sum(0)
                 .print();
 
         env.execute("File to Console Job");
