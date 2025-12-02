@@ -25,24 +25,18 @@ public class Main {
             "file-source"
         );
 
-        DataStream<String> stream2 = env.fromSource(
-                source,
-                WatermarkStrategy.noWatermarks(),
-                "file-source"
-        );
-
         stream
-                .flatMap(new DialFlatmap())
+                .flatMap(new DialFlatmap()).setParallelism(1)
                 .windowAll(GlobalWindows.createWithEndOfStreamTrigger())
                 .sum(0)
-                .print();
+                .print("Day 1 - Part 1 Result");
 
-        stream2
-                .flatMap(new PopulateRotationFlatmap())
+        stream
+                .flatMap(new PopulateRotationFlatmap()).setParallelism(1)
                 .flatMap(new RotateFlatmap())
                 .windowAll(GlobalWindows.createWithEndOfStreamTrigger())
                 .sum(0)
-                .print();
+                .print("Day 1 - Part 2 Result");
 
         env.execute("File to Console Job");
     }
