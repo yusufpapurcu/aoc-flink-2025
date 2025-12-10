@@ -29,6 +29,7 @@ public class Main {
             "file-source"
         );
 
+        // Part 1
         stream
                 .process(new SolutionPart1())
                 .filter(new DeduplicateAvailableIds())
@@ -37,6 +38,18 @@ public class Main {
                 .windowAll(GlobalWindows.createWithEndOfStreamTrigger())
                 .sum(0)
                 .print("Day 5 - Part 1 Result");
+
+        // Part 2
+        DataStream<String> stream2 = env.fromSource(
+            source,
+            WatermarkStrategy.noWatermarks(),
+            "file-source-2"
+        );
+
+        stream2
+                .process(new SolutionPart2())
+                .setParallelism(1) // needed for ordered processing
+                .print("Day 5 - Part 2 Result");
 
         env.execute("File to Console Job");
     }
